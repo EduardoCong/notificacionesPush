@@ -3,8 +3,7 @@ import { PORT } from "./config.js";
 import { getMessaging } from "firebase-admin/messaging";
 import { initializeApp, applicationDefault } from "firebase-admin/app";
 import cors from "cors";
-
-process.env.GOOGLE_APPLICATIONS_CREDENTIALS;
+import { createPool } from "mysql";
 
 const app = express();
 app.use(express.json());
