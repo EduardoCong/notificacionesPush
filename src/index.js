@@ -1,11 +1,10 @@
 import express, { json } from "express";
 import { PORT } from "./config.js";
 import { getMessaging } from "firebase-admin/messaging";
-import { initializeApp, applicationDefault, cert } from "firebase-admin/app";
+import { initializeApp, applicationDefault } from "firebase-admin/app";
 import cors from "cors";
-import serviceAccount from "../credentials.json";
 
-// process.env.GOOGLE_APPLICATIONS_CREDENTIALS;
+process.env.GOOGLE_APPLICATIONS_CREDENTIALS;
 
 const app = express();
 app.use(express.json());
@@ -23,7 +22,7 @@ app.use((req, res, next) => {
 });
 
 initializeApp({
-    credential: cert(serviceAccount),
+    credential: applicationDefault(),
     projectId: "pushnotis-50040",
 });
 
