@@ -7,7 +7,7 @@ import cors from "cors";
 process.env.GOOGLE_APPLICATIONS_CREDENTIALS;
 
 const app = express();
-app.use(express.json);
+app.use(express.json());
 
 app.use(
   cors({
@@ -25,6 +25,12 @@ app.use(function (req, res, next) {
   res.setHeader("Content-Type", "application/json");
   next();
 });
+
+initializeApp({
+    credential: applicationDefault(),
+    projectId: "pushnotis-50040",
+  });
+  
 
 app.post("/send", function () {
   const receivedToken = req.body.fcmToken;
@@ -53,10 +59,6 @@ app.post("/send", function () {
     });
 });
 
-initializeApp({
-  credential: applicationDefault(),
-  projectId: "pushnotis-50040",
+app.listen(PORT, ()=>{
+    console.log("server on port", PORT);
 });
-
-app.listen(PORT);
-console.log("server on port", PORT);
