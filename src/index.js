@@ -21,7 +21,7 @@ app.use(
   })
 );
 
-app.use(function (req, res, next) {
+app.use((res, next)=> {
   res.setHeader("Content-Type", "application/json");
   next();
 });
@@ -32,7 +32,7 @@ initializeApp({
   });
   
 
-app.post("/send", function () {
+app.post("/send", (req, res) => {
   const receivedToken = req.body.fcmToken;
   const message = {
     notification: {
