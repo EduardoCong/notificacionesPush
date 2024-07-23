@@ -34,7 +34,7 @@ app.post("/send", (req, res) => {
             body: "Pase al ande 5",
         },
         token:
-            "ca8t2w4dTeChqPwFE9rioy:APA91bEPnHeC4aLK3cSGGPfLqmQ7g5D3HFzmdHxNe44e725b44e_gJ-qid1Ro7EMdTg4L8YL7442o7UZHMO1tVCrfjHzUsRug21h2RnpkfIdBr93YaKTw18EneOywPN14rvz3WvNcICg",
+            "fTYY4_tnQ9aKDM2MxD-GzW:APA91bG2SBSja5p1JlD8sgL16cunG1AsXfKiqBavvHWlxF0OngHxnbJoIw4tJY37R4vARb2-AwShLsBQbUoG1gF6a1Lv0vpO-_v0qp05DDi-VT1v9G_VO7EuVtJ20kPUJzwy3S-0sTzo",
     };
 
     getMessaging()
