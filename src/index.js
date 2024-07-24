@@ -37,7 +37,7 @@ app.post("/send-notification", async (req, res) => {
 
     try {
         const [devices] = await pool.execute(
-            "SELECT token_dispositivo FROM db_dispositivos_notificaciones WHERE cliente_id = ?", 
+            "SELECT token_dispositivo FROM db_dispositivos_notificaciones WHERE cliente_id = ?",
             [clientId]
         );
 
@@ -51,13 +51,6 @@ app.post("/send-notification", async (req, res) => {
                 notification: {
                     title: `¡Es tu turno: ${turno}!`,
                     body: `¡Pase al andén: ${modulo}!`,
-                    actions: [
-                        {
-                            action: 'ver_detalles',
-                            title: 'Ver detalles del turno',
-                            // icon: 'icono_detalles.png'
-                        }
-                    ]
                 },
                 token: device.token_dispositivo,
             };
