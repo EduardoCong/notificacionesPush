@@ -3,7 +3,8 @@ import { PORT } from "./config.js";
 import { getMessaging } from "firebase-admin/messaging";
 import { initializeApp, applicationDefault } from "firebase-admin/app";
 import cors from "cors";
-import pool from "./db.js"
+import pool from "./db.js";
+
 const app = express();
 app.use(express.json());
 
@@ -24,11 +25,8 @@ initializeApp({
     projectId: "pushnotis-50040",
 });
 
-
 app.post("/send-notification", async (req, res) => {
-    const clientId = req.body.clientId;
-    const turno = req.body.turno;
-    const modulo = req.body.modulo;
+    const { clientId, turno, modulo } = req.body;
 
     try {
         const [devices] = await pool.execute(
@@ -41,24 +39,26 @@ app.post("/send-notification", async (req, res) => {
         }
 
         const messaging = getMessaging();
-        const message = {
-            notification: {
-                title: `¡Es tu turno: ${turno}!`,
-                body: `¡Pase al andén: ${modulo}!`, 
-            },
-        };
-
         const promises = devices.map(device => {
-            message.token = device.token_dispositivo;
+            const message = {
+                notification: {
+                    title: `¡Es tu turno: ${turno}!`,
+                    body: `¡Pase al andén: ${modulo}!`,
+                },
+                token: device.token_dispositivo,
+            };
             return messaging.send(message);
         });
 
         const results = await Promise.allSettled(promises);
 
-        const successfulSends = results.filter(result => result.status === "fulfilled");
+        const successfulSends = results.filter(result => result.status === "fulfilled").length;
+        const failedSends = results.filter(result => result.status === "rejected").length;
+
         res.status(200).json({
             message: "Messages sent successfully",
-            successfulSends: successfulSends.length,
+            successfulSends,
+            failedSends,
             totalDevices: devices.length
         });
 
@@ -69,5 +69,5 @@ app.post("/send-notification", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log("server on port", PORT);
+    console.log("Server running on port", PORT);
 });
