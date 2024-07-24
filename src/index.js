@@ -3,8 +3,7 @@ import { PORT } from "./config.js";
 import { getMessaging } from "firebase-admin/messaging";
 import { initializeApp, applicationDefault } from "firebase-admin/app";
 import cors from "cors";
-import { createPool } from "mysql";
-
+import pool from "./db.js"
 const app = express();
 app.use(express.json());
 
@@ -26,31 +25,47 @@ initializeApp({
 });
 
 
-app.post("/send", (req, res) => {
-    const receivedToken = req.body.fcmToken;
-    const message = {
-        notification: {
-            title: "¡Es tu su turno!",
-            body: "Pase al ande 5",
-        },
-        token:
-            "fTYY4_tnQ9aKDM2MxD-GzW:APA91bG2SBSja5p1JlD8sgL16cunG1AsXfKiqBavvHWlxF0OngHxnbJoIw4tJY37R4vARb2-AwShLsBQbUoG1gF6a1Lv0vpO-_v0qp05DDi-VT1v9G_VO7EuVtJ20kPUJzwy3S-0sTzo",
-    };
+app.post("/send-notification", async (req, res) => {
+    const clientId = req.body.clientId;
+    const turno = req.body.turno;
+    const modulo = req.body.modulo;
 
-    getMessaging()
-        .send(message)
-        .then((response) => {
-            res.status(200).json({
-                message: "Mensaje enviado con exito",
-                token: receivedToken,
-            });
-            console.log("Mensaje enviado", response);
-        })
-        .catch((error) => {
-            res.status(400);
-            res.send(error);
-            console.log("Error al enviar mensaje", error);
+    try {
+        const [devices] = await pool.execute(
+            "SELECT token_dispositivo FROM db_dispositivos_notificaciones WHERE cliente_id = ?", 
+            [clientId]
+        );
+
+        if (devices.length === 0) {
+            return res.status(404).json({ message: "No devices found for client" });
+        }
+
+        const messaging = getMessaging();
+        const message = {
+            notification: {
+                title: `¡Es tu turno: ${turno}!`,
+                body: `¡Pase al andén: ${modulo}!`, 
+            },
+        };
+
+        const promises = devices.map(device => {
+            message.token = device.token_dispositivo;
+            return messaging.send(message);
         });
+
+        const results = await Promise.allSettled(promises);
+
+        const successfulSends = results.filter(result => result.status === "fulfilled");
+        res.status(200).json({
+            message: "Messages sent successfully",
+            successfulSends: successfulSends.length,
+            totalDevices: devices.length
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error sending messages", error: error.message });
+        console.error("Error sending messages:", error);
+    }
 });
 
 app.listen(PORT, () => {
