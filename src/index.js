@@ -52,6 +52,9 @@ app.post("/send-notification", async (req, res) => {
                     title: `¡Es tu turno: ${turno}!`,
                     body: `¡Pase al andén: ${modulo}!`,
                 },
+                data:{
+                    screen: 'Turnos',
+                },
                 token: device.token_dispositivo,
             };
             return messaging.send(message);
