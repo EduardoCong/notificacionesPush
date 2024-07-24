@@ -1,9 +1,15 @@
 import express, { json } from "express";
 import { PORT } from "./config.js";
 import { getMessaging } from "firebase-admin/messaging";
-import { initializeApp, applicationDefault } from "firebase-admin/app";
+import { initializeApp, cert } from "firebase-admin/app";
 import cors from "cors";
 import pool from "./db.js";
+import dotenv from 'dotenv';
+import fs from 'fs';
+dotenv.config();
+
+const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+console.log(credentialsPath);
 
 const app = express();
 app.use(express.json());
@@ -20,8 +26,9 @@ app.use((req, res, next) => {
     next();
 });
 
+const serviceAccount = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
 initializeApp({
-    credential: applicationDefault(),
+    credential: cert(serviceAccount),
     projectId: "pushnotis-50040",
 });
 
@@ -44,6 +51,13 @@ app.post("/send-notification", async (req, res) => {
                 notification: {
                     title: `¡Es tu turno: ${turno}!`,
                     body: `¡Pase al andén: ${modulo}!`,
+                    actions: [
+                        {
+                            action: 'ver_detalles',
+                            title: 'Ver detalles del turno',
+                            // icon: 'icono_detalles.png'
+                        }
+                    ]
                 },
                 token: device.token_dispositivo,
             };
