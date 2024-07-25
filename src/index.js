@@ -49,8 +49,8 @@ app.post("/send-notification", async (req, res) => {
         const promises = devices.map(device => {
             const message = {
                 notification: {
-                    title: `¡Es tu turno: ${turno}!`,
-                    body: `¡Pase al andén: ${modulo}!`,
+                    title: turno,
+                    body: modulo,
                 },
                 data:{
                     screen: '/llamadoTurno',
