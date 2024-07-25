@@ -53,7 +53,7 @@ app.post("/send-notification", async (req, res) => {
                     body: `¡Pase al andén: ${modulo}!`,
                 },
                 data:{
-                    screen: 'Turnos',
+                    screen: '/llamadoTurno',
                 },
                 token: device.token_dispositivo,
             };
