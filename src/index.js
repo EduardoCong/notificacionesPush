@@ -33,7 +33,7 @@ initializeApp({
 });
 
 app.post("/send-notification", async (req, res) => {
-    const { clientId, turno, modulo } = req.body;
+    const { clientId, turno, modulo, usuario, servicio } = req.body;
 
     try {
         const [devices] = await pool.execute(
@@ -49,11 +49,17 @@ app.post("/send-notification", async (req, res) => {
         const promises = devices.map(device => {
             const message = {
                 notification: {
-                    title: turno,
-                    body: modulo,
+                    title: `Turno ${turno} ha sido llamado!`,
+                    body: `Pase al ${modulo}`,
+                    // click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                    // sound: 'default'
                 },
                 data:{
                     screen: '/llamadoTurno',
+                    turnos: turno,
+                    modulos: modulo,
+                    user: usuario,
+                    service: servicio,
                 },
                 token: device.token_dispositivo,
             };
