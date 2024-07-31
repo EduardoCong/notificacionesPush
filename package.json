@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "nodemon src/index.js",
     "dev": "node --watch src/index.js"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
     "firebase-admin": "^12.2.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
-    "mysql2": "^3.10.3"
+    "mysql2": "^3.10.3",
+    "nodemon": "^3.1.4"
   }
 }
