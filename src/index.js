@@ -9,7 +9,7 @@ import fs from 'fs';
 dotenv.config();
 
 const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-console.log(credentialsPath);
+// console.log(credentialsPath);
 
 const app = express();
 app.use(express.json());
@@ -51,8 +51,6 @@ app.post("/send-notification", async (req, res) => {
                 notification: {
                     title: `Turno ${turno} ha sido llamado!`,
                     body: `Pase al ${modulo}`,
-                    // click_action: 'FLUTTER_NOTIFICATION_CLICK',
-                    // sound: 'default'
                 },
                 data:{
                     screen: '/llamadoTurno',
